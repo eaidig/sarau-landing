@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sarau ao Natural - Em Breve</title>
+    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Config -->
     <script>
       tailwind.config = {
         theme: {
@@ -17,26 +23,14 @@
               sans: ['Montserrat', 'sans-serif'],
             },
             colors: {
-              night: {
-                900: '#020617',
-                800: '#0f172a',
-                700: '#1e1b4b',
-              },
-              sarau: {
-                light: '#6fdc8c',
-                DEFAULT: '#3fab5a', // Matches the logo green
-                dark: '#2d7a40',
-              },
-              ember: {
-                light: '#fbbf24',
-                DEFAULT: '#f59e0b',
-                dark: '#b45309',
-                red: '#ef4444',
-              }
+              night: { 900: '#020617', 800: '#0f172a', 700: '#1e1b4b' },
+              sarau: { light: '#6fdc8c', DEFAULT: '#3fab5a', dark: '#2d7a40' },
+              ember: { light: '#fbbf24', DEFAULT: '#f59e0b', dark: '#b45309', red: '#ef4444' }
             },
             animation: {
               'float': 'float 6s ease-in-out infinite',
               'pulse-glow': 'pulse-glow 3s infinite',
+              'shine': 'shine 1.5s infinite',
             },
             keyframes: {
               float: {
@@ -46,41 +40,475 @@
               'pulse-glow': {
                 '0%, 100%': { opacity: 0.8, filter: 'brightness(1)' },
                 '50%': { opacity: 1, filter: 'brightness(1.3)' },
+              },
+              shine: {
+                '0%': { transform: 'translateX(-100%) skewX(-12deg)' },
+                '100%': { transform: 'translateX(200%) skewX(-12deg)' }
               }
             }
           }
         }
       }
     </script>
+
+    <!-- Custom CSS -->
     <style>
       body {
         margin: 0;
         overflow-x: hidden;
         background-color: #020617;
+        color: white;
       }
+      
       /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #020617; }
+      ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+      /* Animations not covered by Tailwind Config */
+      @keyframes rise {
+        0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+        20% { opacity: 1; }
+        100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
       }
-      ::-webkit-scrollbar-track {
-        background: #020617;
+      @keyframes sway {
+        0%, 100% { transform: translateX(0px); }
+        50% { transform: translateX(15px); }
       }
-      ::-webkit-scrollbar-thumb {
-        background: #334155;
-        border-radius: 4px;
+      @keyframes flicker {
+        0%, 100% { transform: scale(1); opacity: 0.9; }
+        25% { transform: scale(1.05) rotate(1deg); opacity: 1; }
+        50% { transform: scale(0.98) rotate(-1deg); opacity: 0.8; }
+        75% { transform: scale(1.02); opacity: 0.95; }
+      }
+
+      .particle {
+        position: absolute;
+        bottom: 0;
+        pointer-events: none;
+        will-change: transform, opacity;
       }
     </style>
-  <script type="importmap">
+<script type="importmap">
 {
   "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0"
+    "react/": "https://aistudiocdn.com/react@^19.2.0/"
   }
 }
 </script>
 </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<body>
+
+  <!-- 1. 8-BIT HEADER GAME -->
+  <div class="w-full bg-[#0f0518] border-b-4 border-[#3fab5a] relative select-none">
+    <canvas id="pixel-canvas" class="w-full h-[300px] cursor-pointer touch-manipulation block"></canvas>
+  </div>
+
+  <!-- 2. MAIN CONTENT WRAPPER -->
+  <div class="relative min-h-[calc(100vh-300px)] w-full bg-gradient-to-b from-[#020617] via-[#0f172a] to-[#1e1b4b] selection:bg-sarau/30 flex flex-col">
+    
+    <!-- Overlay Vignette -->
+    <div class="absolute inset-0 pointer-events-none bg-radial-gradient from-transparent to-black/60 z-20"></div>
+
+    <!-- Background Particles Container -->
+    <div id="particles-container" class="absolute inset-0 pointer-events-none z-0 overflow-hidden"></div>
+
+    <!-- Content Fade-In Container -->
+    <div id="main-content" class="relative z-10 flex flex-col items-center justify-between flex-grow px-4 py-8 transition-opacity duration-1000 ease-out opacity-0">
+      
+      <!-- Header Section -->
+      <header class="text-center mt-8 md:mt-12 max-w-4xl mx-auto space-y-2">
+        <h1 class="font-handwriting text-7xl md:text-9xl text-sarau drop-shadow-[0_0_25px_rgba(63,171,90,0.4)] animate-float pb-2 leading-[0.8]">
+          Sarau <br class="md:hidden" />
+          <span class="text-sarau-light">ao Natural</span>
+        </h1>
+        <p class="font-sans text-lg md:text-2xl text-blue-100/80 font-light tracking-wide leading-relaxed drop-shadow-md pt-4">
+          A arte respira aqui. <br class="hidden md:block" />
+          <span class="text-white font-normal">Inscreva-se e faça parte da nossa história.</span>
+        </p>
+      </header>
+
+      <!-- Action Section (Buttons) -->
+      <main class="w-full max-w-5xl mx-auto mt-8 md:mt-12 mb-20 z-20">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-stretch">
+          
+          <!-- Artist Column (Amber) -->
+          <div class="flex flex-col items-center space-y-4 p-6 rounded-3xl bg-gradient-to-b from-amber-900/10 to-transparent border border-amber-900/20 backdrop-blur-sm">
+            <div class="text-center space-y-2 mb-2">
+              <span class="text-4xl">🎨</span>
+              <h2 class="font-handwriting text-3xl text-ember-light">Para Artistas</h2>
+              <p class="font-sans text-sm text-gray-300 leading-relaxed max-w-xs mx-auto">
+                Música, Poesia, Teatro, Performance. <br/>
+                Se você quer subir no palco, apresentar seu talento e compartilhar sua arte.
+              </p>
+            </div>
+            
+            <!-- Artist Button -->
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSf_scIbk41ISXkwvU4K25msQ1F18vukadyW8sH7dFGU2ezc7A/viewform" target="_blank" rel="noopener noreferrer" 
+               class="relative overflow-hidden group w-full py-4 px-6 rounded-2xl transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-[1.02] backdrop-blur-md border shadow-[0_4px_30px_rgba(0,0,0,0.1)] hover:shadow-[0_10px_40px_rgba(0,0,0,0.4)] flex items-center justify-center bg-amber-600/20 border-amber-500/50 text-amber-100 hover:bg-amber-600/30 hover:border-amber-400 hover:shadow-amber-500/20">
+              <!-- Shine Effect -->
+              <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-amber-500/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:animate-[shine_1.5s_infinite]"></div>
+              <!-- Content -->
+              <span class="relative z-10 flex items-center justify-center font-sans font-semibold text-lg tracking-wider w-full">
+                Inscrição para Artistas
+                <svg class="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              </span>
+              <!-- Bottom Highlight -->
+              <div class="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-50"></div>
+            </a>
+          </div>
+
+          <!-- Exhibitor Column (Green) -->
+          <div class="flex flex-col items-center space-y-4 p-6 rounded-3xl bg-gradient-to-b from-sarau-dark/10 to-transparent border border-sarau-dark/20 backdrop-blur-sm">
+            <div class="text-center space-y-2 mb-2">
+              <span class="text-4xl">🛍️</span>
+              <h2 class="font-handwriting text-3xl text-sarau-light">Para Expositores</h2>
+              <p class="font-sans text-sm text-gray-300 leading-relaxed max-w-xs mx-auto">
+                Artesanato, Gastronomia, Produtos Criativos. <br/>
+                Monte seu stand, exponha e venda seu trabalho.
+              </p>
+            </div>
+            
+            <!-- Exhibitor Button -->
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdvd9jxZVE3J76r0s2v02NItW7WZ2gncHkYFsgm9gcqiGFYfg/viewform" target="_blank" rel="noopener noreferrer"
+               class="relative overflow-hidden group w-full py-4 px-6 rounded-2xl transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-[1.02] backdrop-blur-md border shadow-[0_4px_30px_rgba(0,0,0,0.1)] hover:shadow-[0_10px_40px_rgba(0,0,0,0.4)] flex items-center justify-center bg-sarau/20 border-sarau/50 text-green-50 hover:bg-sarau/30 hover:border-sarau-light hover:shadow-sarau/20">
+              <!-- Shine Effect -->
+              <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-sarau-light/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:animate-[shine_1.5s_infinite]"></div>
+              <!-- Content -->
+              <span class="relative z-10 flex items-center justify-center font-sans font-semibold text-lg tracking-wider w-full">
+                Inscrição para Expositores
+                <svg class="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              </span>
+              <!-- Bottom Highlight -->
+              <div class="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-50"></div>
+            </a>
+          </div>
+
+        </div>
+      </main>
+
+      <!-- Footer & Campfire -->
+      <footer class="w-full flex flex-col items-center justify-end relative h-48 md:h-60 shrink-0">
+        
+        <!-- Campfire Component -->
+        <div class="absolute bottom-12 md:bottom-16 left-1/2 transform -translate-x-1/2 scale-75 md:scale-100 z-0">
+          <div class="relative w-40 h-40 group cursor-pointer">
+            <!-- Glow -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-orange-500/20 blur-[50px] rounded-full group-hover:bg-orange-500/40 group-hover:w-64 group-hover:h-64 transition-all duration-700 ease-in-out animate-pulse-glow"></div>
+            
+            <!-- Logs -->
+            <div class="absolute bottom-0 w-full h-12 flex justify-center items-end">
+              <div class="absolute w-24 h-6 bg-amber-900 rounded-full rotate-[20deg] translate-y-2 -translate-x-4 border-b-2 border-black/50 shadow-lg"></div>
+              <div class="absolute w-24 h-6 bg-amber-900 rounded-full -rotate-[20deg] translate-y-2 translate-x-4 border-b-2 border-black/50 shadow-lg"></div>
+              <div class="absolute w-20 h-5 bg-amber-950 rounded-full rotate-0 translate-y-4 z-10 shadow-xl"></div>
+            </div>
+
+            <!-- Flames -->
+            <div class="absolute bottom-6 left-1/2 -translate-x-1/2 w-full h-full flex justify-center items-end mix-blend-screen">
+              <div class="absolute bottom-2 w-20 h-28 bg-gradient-to-t from-red-600 to-orange-500 rounded-tl-[80%] rounded-tr-[80%] rounded-bl-[20%] rounded-br-[20%] animate-[flicker_3s_ease-in-out_infinite_alternate]" style="transform-origin: bottom center;"></div>
+              <div class="absolute bottom-2 w-16 h-24 bg-gradient-to-t from-orange-500 to-amber-400 rounded-tl-[70%] rounded-tr-[70%] rounded-bl-[30%] rounded-br-[30%] animate-[flicker_2.2s_ease-in-out_infinite_alternate-reverse]" style="transform-origin: bottom center; animation-delay: 0.2s;"></div>
+              <div class="absolute bottom-2 w-10 h-16 bg-gradient-to-t from-amber-300 to-white rounded-full opacity-90 animate-[flicker_1.5s_ease-in-out_infinite_alternate]" style="transform-origin: bottom center; animation-delay: 0.5s;"></div>
+              <!-- Sparks -->
+              <div class="absolute bottom-10 left-8 w-1 h-1 bg-yellow-200 rounded-full animate-ping opacity-75" style="animation-duration: 1.5s;"></div>
+              <div class="absolute bottom-12 right-10 w-1.5 h-1.5 bg-orange-200 rounded-full animate-ping opacity-75" style="animation-duration: 2s; animation-delay: 1s;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="z-10 text-center mt-auto pb-4">
+          <p class="font-sans text-[10px] md:text-xs text-white/30 uppercase tracking-[0.2em] hover:text-white/50 transition-colors">
+            © 2025 - Site criado e hospedado com amor por <a href="https://pigorproducoes.com.br" target="_blank" rel="noopener noreferrer" class="text-sarau-light hover:text-sarau hover:underline font-bold transition-colors">Pigor Produções</a> 💚
+          </p>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    /* --- 1. FADE IN ON LOAD --- */
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('main-content').classList.remove('opacity-0');
+        document.getElementById('main-content').classList.add('opacity-100');
+      }, 100);
+      
+      initParticles();
+      initPixelGame();
+    });
+
+    /* --- 2. PARTICLES SYSTEM --- */
+    function initParticles() {
+      const container = document.getElementById('particles-container');
+      const notes = ['♪', '♫', '♩', '♬', '♭', '♮'];
+      
+      // Create Sparks
+      for (let i = 0; i < 25; i++) {
+        createParticle(container, 'spark', notes);
+      }
+      // Create Notes
+      for (let i = 0; i < 8; i++) {
+        createParticle(container, 'note', notes);
+      }
+    }
+
+    function createParticle(container, type, notes) {
+      const el = document.createElement('div');
+      el.className = `particle text-white ${type === 'spark' ? 'rounded-full bg-amber-500 blur-[1px]' : 'font-serif'}`;
+      
+      const isSpark = type === 'spark';
+      const duration = isSpark ? 3 + Math.random() * 5 : 6 + Math.random() * 8;
+      const delay = Math.random() * 10;
+      const left = Math.random() * 100;
+      const opacity = isSpark ? 0.3 + Math.random() * 0.5 : 0.1 + Math.random() * 0.3;
+      const scale = isSpark ? 0.5 + Math.random() : 0.8 + Math.random() * 0.5;
+
+      el.style.left = `${left}%`;
+      el.style.animation = `rise ${duration}s linear infinite, sway ${duration/2}s ease-in-out infinite alternate`;
+      el.style.animationDelay = `-${delay}s`;
+      el.style.opacity = opacity;
+
+      if (isSpark) {
+        const size = scale * 3;
+        el.style.width = `${size}px`;
+        el.style.height = `${size}px`;
+      } else {
+        el.style.fontSize = `${scale * 1.5}rem`;
+        el.style.color = 'rgba(255,255,255,0.4)';
+        el.innerText = notes[Math.floor(Math.random() * notes.length)];
+      }
+
+      container.appendChild(el);
+    }
+
+    /* --- 3. 8-BIT PIXEL GAME ENGINE --- */
+    function initPixelGame() {
+      const canvas = document.getElementById('pixel-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      
+      // Audio Context
+      let audioCtx = null;
+
+      // Game Config
+      const SCALES = [
+        { note: 261.63, color: '#ef4444', label: 'Dó', key: '1' },
+        { note: 293.66, color: '#f97316', label: 'Ré', key: '2' },
+        { note: 329.63, color: '#eab308', label: 'Mi', key: '3' },
+        { note: 349.23, color: '#22c55e', label: 'Fá', key: '4' },
+        { note: 392.00, color: '#06b6d4', label: 'Sol', key: '5' },
+        { note: 440.00, color: '#3b82f6', label: 'Lá', key: '6' },
+        { note: 493.88, color: '#a855f7', label: 'Si', key: '7' },
+      ];
+
+      const gameState = {
+        musicians: SCALES.map(s => ({ x: 0, y: 260, vy: 0, ...s })),
+        fireIntensity: 1.0
+      };
+
+      // Generate Stars once
+      const stars = [];
+      for(let i=0; i<80; i++) {
+        stars.push({
+          x: Math.random() * window.innerWidth, 
+          y: Math.random() * 200, 
+          alpha: Math.random(),
+          twinkleSpeed: 0.01 + Math.random() * 0.05
+        });
+      }
+      const fireParticles = [];
+
+      // Helper: Play Sound
+      function playNote(frequency) {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+        
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.4);
+      }
+
+      // Helper: Jump Logic
+      function triggerMusician(index) {
+        const GROUND_Y = 260; 
+        const m = gameState.musicians[index];
+        if (m && m.y >= GROUND_Y - 5) {
+          m.vy = -8;
+          playNote(m.note);
+          gameState.fireIntensity = Math.min(gameState.fireIntensity + 1.5, 5.0);
+        }
+      }
+
+      // Event Listeners
+      window.addEventListener('keydown', (e) => {
+        const index = parseInt(e.key) - 1;
+        if (index >= 0 && index < 7) triggerMusician(index);
+      });
+
+      canvas.addEventListener('click', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const clickX = (e.clientX - rect.left) * scaleX;
+        
+        gameState.musicians.forEach((m, index) => {
+          if (Math.abs(clickX - m.x) < 25) triggerMusician(index);
+        });
+      });
+
+      // Animation Loop
+      function render() {
+        // Resize logic
+        if (canvas.width !== canvas.parentElement.clientWidth) {
+          canvas.width = canvas.parentElement.clientWidth;
+          canvas.height = 300;
+        }
+        
+        const width = canvas.width;
+        const height = 300;
+        const centerX = width / 2;
+        const GROUND_Y = height - 40;
+
+        // Fire Decay
+        if (gameState.fireIntensity > 1.0) gameState.fireIntensity *= 0.98;
+        else gameState.fireIntensity = 1.0;
+        
+        const fireScale = gameState.fireIntensity;
+
+        // Positioning
+        let gap = width / 9;
+        if (gap > 50) gap = 50;
+        if (gap < 30) gap = 30;
+        gameState.musicians.forEach((m, idx) => {
+           m.x = centerX + (idx - 3) * gap;
+        });
+
+        // DRAWING
+        ctx.imageSmoothingEnabled = false;
+
+        // 1. Sky
+        ctx.fillStyle = '#0f0518';
+        ctx.fillRect(0, 0, width, height);
+
+        // 2. Moon
+        ctx.fillStyle = '#fbbf24';
+        ctx.fillRect(width - 80, 40, 24, 24);
+        ctx.fillStyle = '#0f0518';
+        ctx.fillRect(width - 72, 48, 8, 8);
+
+        // 3. Stars
+        stars.forEach(s => {
+          ctx.fillStyle = `rgba(255,255,255,${s.alpha})`;
+          if (s.x > width) s.x = Math.random() * width;
+          ctx.fillRect(s.x, s.y, 2, 2);
+          s.alpha += s.twinkleSpeed;
+          if (s.alpha > 1 || s.alpha < 0) s.twinkleSpeed *= -1;
+        });
+
+        // 4. Ground
+        ctx.fillStyle = '#1e1b4b';
+        ctx.fillRect(0, GROUND_Y + 24, width, height);
+        ctx.fillStyle = '#3fab5a';
+        ctx.fillRect(0, GROUND_Y + 24, width, 6);
+
+        // 5. Fire
+        const fireX = centerX;
+        const fireY = GROUND_Y + 20;
+        ctx.fillStyle = '#78350f'; // Logs
+        ctx.fillRect(fireX - 25, fireY, 50, 10);
+
+        // Fire Particles Generation
+        if (Math.random() < 0.3 * fireScale) {
+          fireParticles.push({
+            x: fireX + (Math.random() * 30 - 15) * fireScale,
+            y: fireY,
+            life: 1,
+            vx: (Math.random() - 0.5) * 3 * Math.sqrt(fireScale),
+            vy: -2.5 * Math.sqrt(fireScale)
+          });
+        }
+
+        // Draw Fire Particles
+        for (let i = fireParticles.length - 1; i >= 0; i--) {
+          let p = fireParticles[i];
+          p.y += p.vy;
+          p.x += p.vx;
+          p.life -= 0.04 / Math.sqrt(fireScale);
+          if (p.life <= 0) {
+            fireParticles.splice(i, 1);
+          } else {
+            ctx.fillStyle = p.life > 0.6 ? '#ef4444' : '#fbbf24';
+            const pSize = Math.max(1, p.life * 6 * fireScale);
+            ctx.fillRect(p.x, p.y, pSize, pSize);
+          }
+        }
+
+        // 6. Musicians
+        gameState.musicians.forEach((m, i) => {
+          m.y += m.vy;
+          if (m.y < GROUND_Y) m.vy += 0.5;
+          else { m.y = GROUND_Y; m.vy = 0; }
+
+          const size = 20;
+          const pX = m.x - size/2;
+          const pY = m.y - size;
+
+          // Body
+          ctx.fillStyle = m.color;
+          ctx.fillRect(pX, pY, size, size);
+
+          // Face
+          const lookDir = i < 3 ? 2 : (i > 3 ? -2 : 0);
+          ctx.fillStyle = (['1','6','7'].includes(m.key)) ? '#ffffff' : '#000000'; // Contrast
+          
+          // Eyes
+          ctx.fillRect(pX + 4 + lookDir, pY + 6, 2, 2);
+          ctx.fillRect(pX + 14 + lookDir, pY + 6, 2, 2);
+          // Smile
+          ctx.fillRect(pX + 4 + lookDir, pY + 12, 2, 2);
+          ctx.fillRect(pX + 14 + lookDir, pY + 12, 2, 2);
+          ctx.fillRect(pX + 6 + lookDir, pY + 14, 8, 2);
+
+          // Shadow
+          if (m.y < GROUND_Y) {
+            ctx.fillStyle = 'rgba(0,0,0,0.3)';
+            const shadowScale = 1 - (GROUND_Y - m.y) / 100;
+            if (shadowScale > 0) ctx.fillRect(m.x - 8 * shadowScale, GROUND_Y + 26, 16 * shadowScale, 4);
+          }
+
+          // Label
+          ctx.fillStyle = 'rgba(255,255,255,0.5)';
+          ctx.font = '9px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(m.key, m.x, GROUND_Y + 40);
+        });
+
+        // 7. Help Text
+        ctx.fillStyle = '#3fab5a';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('CLIQUE OU TECLE 1-7', centerX, 20);
+
+        requestAnimationFrame(render);
+      }
+
+      render();
+    }
+  </script>
+</body>
 </html>
