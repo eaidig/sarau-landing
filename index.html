@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sarau ao Natural - Em Breve</title>
+    <title>Sarau ao Natural - Próximo dia 29/11/2025 na Praça Coração de Maria em Esteio - RS - Edição aDeus nossos SONhoS.</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -92,8 +92,8 @@
 <script type="importmap">
 {
   "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/"
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0"
   }
 }
 </script>
@@ -146,7 +146,7 @@
             
             <!-- Artist Button -->
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSf_scIbk41ISXkwvU4K25msQ1F18vukadyW8sH7dFGU2ezc7A/viewform" target="_blank" rel="noopener noreferrer" 
-               class="relative overflow-hidden group w-full py-4 px-6 rounded-2xl transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-105 backdrop-blur-md border shadow-[0_4px_30px_rgba(0,0,0,0.1)] hover:shadow-[0_0_30px_rgba(245,158,11,0.6)] flex items-center justify-center bg-amber-600/20 border-amber-500/50 text-amber-100 hover:bg-amber-600/30 hover:border-amber-300">
+               class="relative overflow-hidden group w-full py-4 px-6 rounded-2xl transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-105 backdrop-blur-md border shadow-[0_4px_30px_rgba(0,0,0,0.1)] hover:shadow-[0_0_30px_rgba(245,158,11,0.6)] hover:border-amber-300 flex items-center justify-center bg-amber-600/20 border-amber-500/50 text-amber-100 hover:bg-amber-600/30">
               <!-- Shine Effect -->
               <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-amber-500/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:animate-[shine_1.5s_infinite]"></div>
               <!-- Content -->
@@ -172,7 +172,7 @@
             
             <!-- Exhibitor Button -->
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSdvd9jxZVE3J76r0s2v02NItW7WZ2gncHkYFsgm9gcqiGFYfg/viewform" target="_blank" rel="noopener noreferrer"
-               class="relative overflow-hidden group w-full py-4 px-6 rounded-2xl transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-105 backdrop-blur-md border shadow-[0_4px_30px_rgba(0,0,0,0.1)] hover:shadow-[0_0_30px_rgba(63,171,90,0.6)] flex items-center justify-center bg-sarau/20 border-sarau/50 text-green-50 hover:bg-sarau/30 hover:border-green-300">
+               class="relative overflow-hidden group w-full py-4 px-6 rounded-2xl transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-105 backdrop-blur-md border shadow-[0_4px_30px_rgba(0,0,0,0.1)] hover:shadow-[0_0_30px_rgba(63,171,90,0.6)] hover:border-green-300 flex items-center justify-center bg-sarau/20 border-sarau/50 text-green-50 hover:bg-sarau/30">
               <!-- Shine Effect -->
               <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-sarau-light/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:animate-[shine_1.5s_infinite]"></div>
               <!-- Content -->
@@ -357,7 +357,8 @@
         if (m && m.y >= GROUND_Y - 5) {
           m.vy = -8;
           playNote(m.note);
-          gameState.fireIntensity = Math.min(gameState.fireIntensity + 1.5, 5.0);
+          // DYNAMIC FIRE BOOST: Cap raised to 8.0, increment larger (2.5) for impact
+          gameState.fireIntensity = Math.min(gameState.fireIntensity + 2.5, 8.0);
         }
       }
 
@@ -404,8 +405,8 @@
         const centerX = width / 2;
         const GROUND_Y = height - 40;
 
-        // Fire Decay
-        if (gameState.fireIntensity > 1.0) gameState.fireIntensity *= 0.98;
+        // Fire Decay (Snappier decay for rhythm)
+        if (gameState.fireIntensity > 1.0) gameState.fireIntensity *= 0.95;
         else gameState.fireIntensity = 1.0;
         
         const fireScale = gameState.fireIntensity;
@@ -444,29 +445,26 @@
         });
         
         // --- SHOOTING STAR LOGIC ---
-        // Spawn Chance (Rare)
         if (!shootingStar && Math.random() < 0.005) {
            const startX = Math.random() * width;
            shootingStar = {
              x: startX,
-             y: Math.random() * (height / 3), // Start in upper third
-             vx: -4 - Math.random() * 4, // Move left quickly
-             vy: 2 + Math.random() * 2,  // Move down slightly
-             len: 30 + Math.random() * 40, // Tail length
+             y: Math.random() * (height / 3),
+             vx: -4 - Math.random() * 4,
+             vy: 2 + Math.random() * 2,
+             len: 30 + Math.random() * 40,
              life: 1.0
            };
         }
         
-        // Update & Draw Shooting Star
         if (shootingStar) {
            shootingStar.x += shootingStar.vx;
            shootingStar.y += shootingStar.vy;
-           shootingStar.life -= 0.015; // Fade out
+           shootingStar.life -= 0.015;
            
            if (shootingStar.life <= 0 || shootingStar.x < -100 || shootingStar.y > height) {
              shootingStar = null;
            } else {
-             // Draw tail
              const gradient = ctx.createLinearGradient(
                 shootingStar.x, shootingStar.y, 
                 shootingStar.x - shootingStar.vx * 4, shootingStar.y - shootingStar.vy * 4
@@ -481,7 +479,6 @@
              ctx.lineTo(shootingStar.x - shootingStar.vx * 4, shootingStar.y - shootingStar.vy * 4);
              ctx.stroke();
              
-             // Draw head
              ctx.fillStyle = '#ffffff';
              ctx.fillRect(shootingStar.x, shootingStar.y, 2, 2);
            }
@@ -493,20 +490,35 @@
         ctx.fillStyle = '#3fab5a';
         ctx.fillRect(0, GROUND_Y + 24, width, 6);
 
-        // 5. Fire
+        // 5. Fire (Dinâmica)
         const fireX = centerX;
         const fireY = GROUND_Y + 20;
-        ctx.fillStyle = '#78350f'; // Logs
+
+        // DYNAMIC CANVAS GLOW
+        const glowSize = 40 + (fireScale * 20);
+        const glowGradient = ctx.createRadialGradient(fireX, fireY, 10, fireX, fireY, glowSize);
+        glowGradient.addColorStop(0, `rgba(255, 150, 50, ${Math.min(0.8, fireScale * 0.15)})`);
+        glowGradient.addColorStop(1, 'rgba(255, 100, 0, 0)');
+        ctx.fillStyle = glowGradient;
+        ctx.globalCompositeOperation = 'screen';
+        ctx.fillRect(fireX - glowSize, fireY - glowSize, glowSize * 2, glowSize * 2);
+        ctx.globalCompositeOperation = 'source-over';
+
+        // Logs
+        ctx.fillStyle = '#78350f'; 
         ctx.fillRect(fireX - 25, fireY, 50, 10);
 
-        // Fire Particles Generation
-        if (Math.random() < 0.3 * fireScale) {
+        // Fire Particles Generation (Loop for Volume)
+        // The higher the scale, the more particles spawn per frame
+        const particlesToSpawn = Math.floor(fireScale * 0.8) + (Math.random() < 0.4 ? 1 : 0);
+        
+        for(let i=0; i < particlesToSpawn; i++) {
           fireParticles.push({
-            x: fireX + (Math.random() * 30 - 15) * fireScale,
+            x: fireX + (Math.random() * 30 - 15) * (fireScale * 0.8),
             y: fireY,
             life: 1,
             vx: (Math.random() - 0.5) * 3 * Math.sqrt(fireScale),
-            vy: -2.5 * Math.sqrt(fireScale)
+            vy: -2.5 * Math.sqrt(fireScale) // Higher heat = faster rise
           });
         }
 
@@ -519,7 +531,11 @@
           if (p.life <= 0) {
             fireParticles.splice(i, 1);
           } else {
-            ctx.fillStyle = p.life > 0.6 ? '#ef4444' : '#fbbf24';
+            // Color shift based on height/life
+            ctx.fillStyle = p.life > 0.7 ? '#ef4444' : '#fbbf24';
+            // Add white core for high heat
+            if (fireScale > 4.0 && p.life > 0.8) ctx.fillStyle = '#ffffff';
+            
             const pSize = Math.max(1, p.life * 6 * fireScale);
             ctx.fillRect(p.x, p.y, pSize, pSize);
           }
@@ -566,7 +582,6 @@
           ctx.fillText(m.key, m.x, GROUND_Y + 40);
 
           // --- TOOLTIP LOGIC ---
-          // Hitbox: x +/- 15, y from m.y-25 to m.y
           const hitLeft = m.x - 15;
           const hitRight = m.x + 15;
           const hitTop = m.y - 30;
@@ -582,20 +597,13 @@
             const boxX = m.x - boxW / 2;
             const boxY = m.y - 40; // Float above head
 
-            // Box Shadow (Pixel Style)
             ctx.fillStyle = 'rgba(0,0,0,0.4)';
             ctx.fillRect(boxX + 2, boxY + 2, boxW, boxH);
-
-            // Box Background (White)
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(boxX, boxY, boxW, boxH);
-            
-            // Box Border (Black)
             ctx.strokeStyle = '#000000';
             ctx.lineWidth = 2;
             ctx.strokeRect(boxX, boxY, boxW, boxH);
-
-            // Text (Black)
             ctx.fillStyle = '#000000';
             ctx.textBaseline = 'middle';
             ctx.textAlign = 'center';
