@@ -65,7 +65,7 @@
       ::-webkit-scrollbar-track { background: #020617; }
       ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
 
-      /* Animations not covered by Tailwind Config */
+      /* Animations */
       @keyframes rise {
         0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
         20% { opacity: 1; }
@@ -93,7 +93,6 @@
 {
   "imports": {
     "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
     "react/": "https://aistudiocdn.com/react@^19.2.0/"
   }
 }
@@ -147,7 +146,7 @@
             
             <!-- Artist Button -->
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSf_scIbk41ISXkwvU4K25msQ1F18vukadyW8sH7dFGU2ezc7A/viewform" target="_blank" rel="noopener noreferrer" 
-               class="relative overflow-hidden group w-full py-4 px-6 rounded-2xl transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-[1.02] backdrop-blur-md border shadow-[0_4px_30px_rgba(0,0,0,0.1)] hover:shadow-[0_10px_40px_rgba(0,0,0,0.4)] flex items-center justify-center bg-amber-600/20 border-amber-500/50 text-amber-100 hover:bg-amber-600/30 hover:border-amber-400 hover:shadow-amber-500/20">
+               class="relative overflow-hidden group w-full py-4 px-6 rounded-2xl transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-105 backdrop-blur-md border shadow-[0_4px_30px_rgba(0,0,0,0.1)] hover:shadow-[0_0_30px_rgba(245,158,11,0.6)] flex items-center justify-center bg-amber-600/20 border-amber-500/50 text-amber-100 hover:bg-amber-600/30 hover:border-amber-300">
               <!-- Shine Effect -->
               <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-amber-500/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:animate-[shine_1.5s_infinite]"></div>
               <!-- Content -->
@@ -173,7 +172,7 @@
             
             <!-- Exhibitor Button -->
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSdvd9jxZVE3J76r0s2v02NItW7WZ2gncHkYFsgm9gcqiGFYfg/viewform" target="_blank" rel="noopener noreferrer"
-               class="relative overflow-hidden group w-full py-4 px-6 rounded-2xl transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-[1.02] backdrop-blur-md border shadow-[0_4px_30px_rgba(0,0,0,0.1)] hover:shadow-[0_10px_40px_rgba(0,0,0,0.4)] flex items-center justify-center bg-sarau/20 border-sarau/50 text-green-50 hover:bg-sarau/30 hover:border-sarau-light hover:shadow-sarau/20">
+               class="relative overflow-hidden group w-full py-4 px-6 rounded-2xl transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-105 backdrop-blur-md border shadow-[0_4px_30px_rgba(0,0,0,0.1)] hover:shadow-[0_0_30px_rgba(63,171,90,0.6)] flex items-center justify-center bg-sarau/20 border-sarau/50 text-green-50 hover:bg-sarau/30 hover:border-green-300">
               <!-- Shine Effect -->
               <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-sarau-light/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:animate-[shine_1.5s_infinite]"></div>
               <!-- Content -->
@@ -192,7 +191,7 @@
       <!-- Footer & Campfire -->
       <footer class="w-full flex flex-col items-center justify-end relative h-48 md:h-60 shrink-0">
         
-        <!-- Campfire Component -->
+        <!-- Campfire Component (Pure CSS) -->
         <div class="absolute bottom-12 md:bottom-16 left-1/2 transform -translate-x-1/2 scale-75 md:scale-100 z-0">
           <div class="relative w-40 h-40 group cursor-pointer">
             <!-- Glow -->
@@ -309,6 +308,10 @@
         fireIntensity: 1.0
       };
 
+      // Mouse Tracking State
+      let mouseX = -1000;
+      let mouseY = -1000;
+
       // Generate Stars once
       const stars = [];
       for(let i=0; i<80; i++) {
@@ -320,6 +323,9 @@
         });
       }
       const fireParticles = [];
+      
+      // Shooting Star State
+      let shootingStar = null;
 
       // Helper: Play Sound
       function playNote(frequency) {
@@ -371,6 +377,20 @@
         });
       });
 
+      // Mouse Move for Tooltips
+      canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        mouseX = (e.clientX - rect.left) * scaleX;
+        mouseY = (e.clientY - rect.top) * scaleY;
+      });
+
+      canvas.addEventListener('mouseleave', () => {
+        mouseX = -1000;
+        mouseY = -1000;
+      });
+
       // Animation Loop
       function render() {
         // Resize logic
@@ -391,9 +411,12 @@
         const fireScale = gameState.fireIntensity;
 
         // Positioning
+        const maxGap = 50;
+        const minGap = 30;
         let gap = width / 9;
-        if (gap > 50) gap = 50;
-        if (gap < 30) gap = 30;
+        if (gap > maxGap) gap = maxGap;
+        if (gap < minGap) gap = minGap;
+
         gameState.musicians.forEach((m, idx) => {
            m.x = centerX + (idx - 3) * gap;
         });
@@ -419,6 +442,50 @@
           s.alpha += s.twinkleSpeed;
           if (s.alpha > 1 || s.alpha < 0) s.twinkleSpeed *= -1;
         });
+        
+        // --- SHOOTING STAR LOGIC ---
+        // Spawn Chance (Rare)
+        if (!shootingStar && Math.random() < 0.005) {
+           const startX = Math.random() * width;
+           shootingStar = {
+             x: startX,
+             y: Math.random() * (height / 3), // Start in upper third
+             vx: -4 - Math.random() * 4, // Move left quickly
+             vy: 2 + Math.random() * 2,  // Move down slightly
+             len: 30 + Math.random() * 40, // Tail length
+             life: 1.0
+           };
+        }
+        
+        // Update & Draw Shooting Star
+        if (shootingStar) {
+           shootingStar.x += shootingStar.vx;
+           shootingStar.y += shootingStar.vy;
+           shootingStar.life -= 0.015; // Fade out
+           
+           if (shootingStar.life <= 0 || shootingStar.x < -100 || shootingStar.y > height) {
+             shootingStar = null;
+           } else {
+             // Draw tail
+             const gradient = ctx.createLinearGradient(
+                shootingStar.x, shootingStar.y, 
+                shootingStar.x - shootingStar.vx * 4, shootingStar.y - shootingStar.vy * 4
+             );
+             gradient.addColorStop(0, `rgba(255,255,255,${shootingStar.life})`);
+             gradient.addColorStop(1, `rgba(255,255,255,0)`);
+             
+             ctx.strokeStyle = gradient;
+             ctx.lineWidth = 2;
+             ctx.beginPath();
+             ctx.moveTo(shootingStar.x, shootingStar.y);
+             ctx.lineTo(shootingStar.x - shootingStar.vx * 4, shootingStar.y - shootingStar.vy * 4);
+             ctx.stroke();
+             
+             // Draw head
+             ctx.fillStyle = '#ffffff';
+             ctx.fillRect(shootingStar.x, shootingStar.y, 2, 2);
+           }
+        }
 
         // 4. Ground
         ctx.fillStyle = '#1e1b4b';
@@ -474,7 +541,8 @@
 
           // Face
           const lookDir = i < 3 ? 2 : (i > 3 ? -2 : 0);
-          ctx.fillStyle = (['1','6','7'].includes(m.key)) ? '#ffffff' : '#000000'; // Contrast
+          // Contrast
+          ctx.fillStyle = (['1','6','7'].includes(m.key)) ? '#ffffff' : '#000000'; 
           
           // Eyes
           ctx.fillRect(pX + 4 + lookDir, pY + 6, 2, 2);
@@ -491,17 +559,55 @@
             if (shadowScale > 0) ctx.fillRect(m.x - 8 * shadowScale, GROUND_Y + 26, 16 * shadowScale, 4);
           }
 
-          // Label
+          // Label (Keyboard shortcut below)
           ctx.fillStyle = 'rgba(255,255,255,0.5)';
           ctx.font = '9px monospace';
           ctx.textAlign = 'center';
           ctx.fillText(m.key, m.x, GROUND_Y + 40);
+
+          // --- TOOLTIP LOGIC ---
+          // Hitbox: x +/- 15, y from m.y-25 to m.y
+          const hitLeft = m.x - 15;
+          const hitRight = m.x + 15;
+          const hitTop = m.y - 30;
+          const hitBottom = m.y;
+          
+          if (mouseX >= hitLeft && mouseX <= hitRight && mouseY >= hitTop && mouseY <= hitBottom) {
+            const text = m.label; // "Dó", "Ré", etc.
+            ctx.font = 'bold 10px monospace';
+            const textWidth = ctx.measureText(text).width;
+            const padding = 6;
+            const boxW = textWidth + padding * 2;
+            const boxH = 18;
+            const boxX = m.x - boxW / 2;
+            const boxY = m.y - 40; // Float above head
+
+            // Box Shadow (Pixel Style)
+            ctx.fillStyle = 'rgba(0,0,0,0.4)';
+            ctx.fillRect(boxX + 2, boxY + 2, boxW, boxH);
+
+            // Box Background (White)
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(boxX, boxY, boxW, boxH);
+            
+            // Box Border (Black)
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+            // Text (Black)
+            ctx.fillStyle = '#000000';
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'center';
+            ctx.fillText(text, m.x, boxY + boxH/2);
+          }
         });
 
         // 7. Help Text
         ctx.fillStyle = '#3fab5a';
         ctx.font = '10px monospace';
         ctx.textAlign = 'center';
+        ctx.textBaseline = 'alphabetic';
         ctx.fillText('CLIQUE OU TECLE 1-7', centerX, 20);
 
         requestAnimationFrame(render);
