@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sarau ao Natural - Próximo dia 29/11/2025 na Praça Coração de Maria em Esteio - RS - Edição aDeus nossos SONhoS.</title>
     
+    <!-- Social Share / Open Graph Meta Tags -->
+    <meta property="og:title" content="Sarau ao Natural - Edição aDeus nossos SONhoS" />
+    <meta property="og:description" content="Próximo dia 29/11/2025 na Praça Coração de Maria em Esteio - RS. Inscreva-se e faça parte!" />
+    <meta property="og:image" content="https://sarauaonatural.art.br/Logo-Sarau-Ao-Natural-fundo-escuro.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://sarauaonatural.art.br/Logo-Sarau-Ao-Natural-fundo-escuro.png" />
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -21,19 +31,19 @@
             fontFamily: {
               handwriting: ['Caveat', 'cursive'],
               sans: ['Montserrat', 'sans-serif'],
-              serif: ['Playfair Display', 'serif'], // Added for the movie title
+              serif: ['Playfair Display', 'serif'],
             },
             colors: {
               night: { 900: '#020617', 800: '#0f172a', 700: '#1e1b4b' },
               sarau: { light: '#6fdc8c', DEFAULT: '#3fab5a', dark: '#2d7a40' },
               ember: { light: '#fbbf24', DEFAULT: '#f59e0b', dark: '#b45309', red: '#ef4444' },
-              cinema: { black: '#1C1C1C', gold: '#D4A017', red: '#B22222' } // New Cinematic Colors
+              cinema: { black: '#1C1C1C', gold: '#D4A017', red: '#B22222' }
             },
             animation: {
               'float': 'float 6s ease-in-out infinite',
               'pulse-glow': 'pulse-glow 3s infinite',
               'shine': 'shine 1.5s infinite',
-              'heartbeat': 'heartbeat 2s infinite', // New pulse for movie button
+              'heartbeat': 'heartbeat 2s infinite',
             },
             keyframes: {
               float: {
@@ -125,11 +135,16 @@
     <div id="main-content" class="relative z-10 flex flex-col items-center justify-between flex-grow px-4 py-8 transition-opacity duration-1000 ease-out opacity-0">
       
       <!-- Header Section -->
-      <header class="text-center mt-8 md:mt-12 max-w-4xl mx-auto space-y-2">
-        <h1 class="font-handwriting text-7xl md:text-9xl text-sarau drop-shadow-[0_0_25px_rgba(63,171,90,0.4)] animate-float pb-2 leading-[0.8]">
-          Sarau <br class="md:hidden" />
-          <span class="text-sarau-light">ao Natural</span>
-        </h1>
+      <header class="text-center mt-8 md:mt-12 max-w-4xl mx-auto space-y-2 flex flex-col items-center">
+        <!-- Logo Image -->
+        <div class="relative w-full max-w-[300px] md:max-w-[450px] animate-float">
+            <img 
+                src="https://sarauaonatural.art.br/Logo-Sarau-Ao-Natural-transparente2.png" 
+                alt="Sarau ao Natural Logo" 
+                class="w-full h-auto drop-shadow-[0_0_25px_rgba(63,171,90,0.3)]"
+            />
+        </div>
+        
         <p class="font-sans text-lg md:text-2xl text-blue-100/80 font-light tracking-wide leading-relaxed drop-shadow-md pt-4">
           A arte respira aqui. <br class="hidden md:block" />
           <span class="text-white font-normal">Inscreva-se e faça parte da nossa história.</span>
