@@ -11,7 +11,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 
     <!-- Tailwind Config -->
     <script>
@@ -21,16 +21,19 @@
             fontFamily: {
               handwriting: ['Caveat', 'cursive'],
               sans: ['Montserrat', 'sans-serif'],
+              serif: ['Playfair Display', 'serif'], // Added for the movie title
             },
             colors: {
               night: { 900: '#020617', 800: '#0f172a', 700: '#1e1b4b' },
               sarau: { light: '#6fdc8c', DEFAULT: '#3fab5a', dark: '#2d7a40' },
-              ember: { light: '#fbbf24', DEFAULT: '#f59e0b', dark: '#b45309', red: '#ef4444' }
+              ember: { light: '#fbbf24', DEFAULT: '#f59e0b', dark: '#b45309', red: '#ef4444' },
+              cinema: { black: '#1C1C1C', gold: '#D4A017', red: '#B22222' } // New Cinematic Colors
             },
             animation: {
               'float': 'float 6s ease-in-out infinite',
               'pulse-glow': 'pulse-glow 3s infinite',
               'shine': 'shine 1.5s infinite',
+              'heartbeat': 'heartbeat 2s infinite', // New pulse for movie button
             },
             keyframes: {
               float: {
@@ -44,6 +47,10 @@
               shine: {
                 '0%': { transform: 'translateX(-100%) skewX(-12deg)' },
                 '100%': { transform: 'translateX(200%) skewX(-12deg)' }
+              },
+              heartbeat: {
+                '0%, 100%': { transform: 'scale(1)', boxShadow: '0 0 0 0 rgba(178, 34, 34, 0.7)' },
+                '50%': { transform: 'scale(1.05)', boxShadow: '0 0 20px 0 rgba(178, 34, 34, 0)' },
               }
             }
           }
@@ -92,8 +99,8 @@
 <script type="importmap">
 {
   "imports": {
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0"
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/"
   }
 }
 </script>
@@ -130,7 +137,7 @@
       </header>
 
       <!-- Action Section (Buttons) -->
-      <main class="w-full max-w-5xl mx-auto mt-8 md:mt-12 mb-20 z-20">
+      <main class="w-full max-w-5xl mx-auto mt-8 md:mt-12 z-20">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-stretch">
           
           <!-- Artist Column (Amber) -->
@@ -187,6 +194,58 @@
 
         </div>
       </main>
+
+      <!-- 3. NEW CINEMATIC SECTION: aDeus nossos SONhoS -->
+      <section class="w-full max-w-4xl mx-auto mt-16 mb-24 relative z-20">
+        <!-- Container Box -->
+        <div class="relative overflow-hidden rounded-xl bg-cinema-black border border-cinema-gold/30 shadow-[0_0_40px_rgba(0,0,0,0.8)] group transition-all duration-500 hover:border-cinema-gold/60">
+            
+            <!-- Background Texture/Glow -->
+            <div class="absolute inset-0 bg-gradient-to-br from-cinema-gold/5 via-transparent to-cinema-red/10 pointer-events-none"></div>
+            <div class="absolute -top-20 -right-20 w-40 h-40 bg-cinema-gold/10 blur-[60px] rounded-full"></div>
+            
+            <div class="relative z-10 px-8 py-10 md:py-12 flex flex-col items-center text-center">
+                
+                <!-- Tagline -->
+                <h3 class="text-cinema-gold font-sans font-bold text-xs md:text-sm tracking-[0.3em] uppercase mb-4 animate-pulse">
+                    ★ Grande Estreia no Sarau ★
+                </h3>
+
+                <!-- Film Title -->
+                <h2 class="font-sans text-4xl md:text-6xl font-bold text-gray-100 tracking-tight leading-none mb-2">
+                    aDeus nossos <span class="font-serif italic text-cinema-red">SONhoS</span>
+                </h2>
+
+                <!-- Divider -->
+                <div class="w-16 h-1 bg-cinema-gold rounded-full opacity-60 my-6"></div>
+
+                <!-- Credits & Info -->
+                <div class="space-y-2 mb-8">
+                    <p class="font-sans text-gray-400 font-light text-sm md:text-base">
+                        Um filme de <strong class="text-gray-200">Lilian Martins Fontoura</strong>.
+                    </p>
+                    <p class="font-sans text-gray-500 text-xs uppercase tracking-widest">
+                        Uma produção Lei Paulo Gustavo
+                    </p>
+                    <p class="font-sans text-gray-300 text-sm md:text-base mt-4 pt-2 border-t border-white/10 inline-block px-4">
+                        29/11/2025 • Praça Coração de Maria • Esteio/RS
+                    </p>
+                </div>
+
+                <!-- CTA Button -->
+                <a href="https://adeusnossossonhos.com.br" target="_blank" rel="noopener noreferrer" 
+                   class="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-cinema-red to-[#8b1a1a] text-white rounded-full font-semibold tracking-wide transition-all transform hover:scale-105 hover:shadow-[0_0_25px_rgba(178,34,34,0.6)] animate-heartbeat group-hover:from-[#c22626] group-hover:to-[#a31e1e]">
+                    <span class="relative flex h-3 w-3">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+                    </span>
+                    Assistir Teaser & Saber Mais
+                    <svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </a>
+
+            </div>
+        </div>
+      </section>
 
       <!-- Footer & Campfire -->
       <footer class="w-full flex flex-col items-center justify-end relative h-48 md:h-60 shrink-0">
@@ -304,7 +363,7 @@
       ];
 
       const gameState = {
-        musicians: SCALES.map(s => ({ x: 0, y: 260, vy: 0, ...s })),
+        musicians: SCALES.map(s => ({ x: 0, y: 260, vy: 0, blinkEnd: 0, ...s })),
         fireIntensity: 1.0
       };
 
@@ -429,6 +488,41 @@
         ctx.fillStyle = '#0f0518';
         ctx.fillRect(0, 0, width, height);
 
+        // --- COUNTDOWN LOGIC ---
+        const eventDate = new Date('2025-11-29T14:00:00').getTime();
+        const now = new Date().getTime();
+        const diff = eventDate - now;
+
+        if (diff > 0) {
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+          // Efeito pulsante no texto
+          const pulse = 1 + Math.sin(Date.now() / 500) * 0.05;
+          const fontSize = 16 * pulse;
+          
+          ctx.save();
+          ctx.font = `bold ${fontSize}px monospace`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+          
+          // Sombra Neon
+          ctx.shadowColor = '#3fab5a';
+          ctx.shadowBlur = 15;
+          ctx.fillStyle = '#ffffff';
+          
+          const text = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+          ctx.fillText(text, centerX, 80);
+          
+          ctx.shadowBlur = 0;
+          ctx.font = '10px monospace';
+          ctx.fillStyle = '#3fab5a';
+          ctx.fillText('PARA O GRANDE DIA', centerX, 65);
+          ctx.restore();
+        }
+
         // 2. Moon
         ctx.fillStyle = '#fbbf24';
         ctx.fillRect(width - 80, 40, 24, 24);
@@ -495,9 +589,12 @@
         const fireY = GROUND_Y + 20;
 
         // DYNAMIC CANVAS GLOW
-        const glowSize = 40 + (fireScale * 20);
+        // Add subtle idle breathing using sine wave
+        const idleBreath = Math.sin(Date.now() / 400) * 8; 
+        const glowSize = 40 + (fireScale * 20) + idleBreath;
+        
         const glowGradient = ctx.createRadialGradient(fireX, fireY, 10, fireX, fireY, glowSize);
-        glowGradient.addColorStop(0, `rgba(255, 150, 50, ${Math.min(0.8, fireScale * 0.15)})`);
+        glowGradient.addColorStop(0, `rgba(255, 150, 50, ${Math.min(0.8, (fireScale * 0.15) + 0.1)})`); // Increased base opacity slightly
         glowGradient.addColorStop(1, 'rgba(255, 100, 0, 0)');
         ctx.fillStyle = glowGradient;
         ctx.globalCompositeOperation = 'screen';
@@ -555,18 +652,37 @@
           ctx.fillStyle = m.color;
           ctx.fillRect(pX, pY, size, size);
 
-          // Face
+          // Face Logic
           const lookDir = i < 3 ? 2 : (i > 3 ? -2 : 0);
-          // Contrast
           ctx.fillStyle = (['1','6','7'].includes(m.key)) ? '#ffffff' : '#000000'; 
           
+          // Blink State
+          if (Date.now() > m.blinkEnd && Math.random() < 0.005) {
+             m.blinkEnd = Date.now() + 200; // blink duration
+          }
+          const blinking = Date.now() < m.blinkEnd;
+
           // Eyes
-          ctx.fillRect(pX + 4 + lookDir, pY + 6, 2, 2);
-          ctx.fillRect(pX + 14 + lookDir, pY + 6, 2, 2);
-          // Smile
-          ctx.fillRect(pX + 4 + lookDir, pY + 12, 2, 2);
-          ctx.fillRect(pX + 14 + lookDir, pY + 12, 2, 2);
-          ctx.fillRect(pX + 6 + lookDir, pY + 14, 8, 2);
+          if (blinking) {
+             // Eyes Closed
+             ctx.fillRect(pX + 4 + lookDir, pY + 8, 3, 1);
+             ctx.fillRect(pX + 13 + lookDir, pY + 8, 3, 1);
+          } else {
+             // Eyes Open (Slightly larger for cuteness)
+             ctx.fillRect(pX + 4 + lookDir, pY + 6, 3, 3);
+             ctx.fillRect(pX + 13 + lookDir, pY + 6, 3, 3);
+          }
+
+          // Mouth Expression
+          if (m.y < GROUND_Y) {
+            // Jumping: Singing Mouth (Big "O")
+            ctx.fillRect(pX + 8 + lookDir, pY + 12, 4, 5);
+          } else {
+            // Standing: Big Joyful Smile
+            ctx.fillRect(pX + 3 + lookDir, pY + 11, 2, 2); // Corners raised high
+            ctx.fillRect(pX + 15 + lookDir, pY + 11, 2, 2);
+            ctx.fillRect(pX + 5 + lookDir, pY + 13, 10, 3); // Wide, thick bottom curve
+          }
 
           // Shadow
           if (m.y < GROUND_Y) {
@@ -610,8 +726,15 @@
             ctx.fillText(text, m.x, boxY + boxH/2);
           }
         });
+        
+        // 8. Vignette (Dark Edges)
+        const gradient = ctx.createRadialGradient(centerX, height/2, 100, centerX, height/2, width/1.5);
+        gradient.addColorStop(0, 'rgba(0,0,0,0)');
+        gradient.addColorStop(1, 'rgba(15,5,24,0.6)'); // Dark tint matching bg
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, width, height);
 
-        // 7. Help Text
+        // 9. Help Text
         ctx.fillStyle = '#3fab5a';
         ctx.font = '10px monospace';
         ctx.textAlign = 'center';
